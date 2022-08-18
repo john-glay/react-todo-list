@@ -1,29 +1,42 @@
-import React, { useState } from 'react'
-import TodoBody from './TodoBody';
-import TodoHeader from './TodoHeader';
+import React, { useState } from "react";
+import TodoHeader from "./TodoHeader";
+import TodoBody from "./TodoBody";
 
-export default function TodoLIst() {
-    const [todos, setTodos] = useState([]);
+export default function TodoList() {
+  const [todos, setTodos] = useState([]);
 
-    const addTodo = (newTodo) => {
-        if (!newTodo.text) {
-            return;
-        }
+  const addTodo = (newTodo) => {
+    if (!newTodo.text) {
+      return;
+    }
+    const newTodos = [newTodo, ...todos];
+    setTodos(newTodos);
+  };
 
-        const newTodos = [newTodo,  ...todos];
+  const removeTodo = (id) => {
+    const newTodos = [...todos].filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
 
-        setTodos(newTodos);
-    };
+  const updateTodo = (todoId, newValue) => {
+    if (!newValue) {
+      return;
+    }
+    const newTodos = todos.map((item) =>
+      item.id === todoId ? newValue : item
+    );
+    setTodos(newTodos);
+  };
 
   return (
     <header>
-        <h1>Tast List 2022</h1>
-        <TodoHeader addTodo={addTodo} />
-        <br />
-        <hr />
-        <br />
-        <br />
-        <TodoBody todos={todos} />
+      <h1>Tast List 2022</h1>
+      <TodoHeader onSubmit={addTodo} />
+      <br />
+      <hr />
+      <br />
+      <br />
+      <TodoBody todos={todos} removeTodo={removeTodo} updateTodo={updateTodo} />
     </header>
   );
 }

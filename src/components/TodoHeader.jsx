@@ -1,33 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export default function TodoHeader({ addTodo }) {
-  const [input, setInput] = useState("");
+export default function TodoHeader({ edit, onSubmit }) {
+  const [input, setInput] = useState(edit ? edit.value : "");
+  const inputRef = useRef(null);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  useEffect(() => {
+    inputRef.current.focus();
+  });
 
-        addTodo({
-            id: Math.floor(Math.random() * 100000),
-            text: input,
-        });
-        setInput("");
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    onSubmit({
+      id: Math.floor(Math.random() * 100000),
+      text: input,
+    });
+    setInput("");
+  };
 
   return (
     <form onSubmit={handleSubmit} className="new-task-form">
-      <div>
-        <input
-          id="new-task-input"
-          type="text"
-          value={input}
-          name="text"
-          className="todo-iput"
-          placeholder="What do you have planned?"
-          style={{ width : '600px' }}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button id="new-task-submit">Add todo</button>
-      </div>
+      {edit ? (
+        <div>
+          <input
+            id="new-task-input"
+            value={input}
+            ref={inputRef}
+            onChange={(e) => setInput(e.target.value)}
+            name="text"
+            className="todo-input edit"
+            style={{ width: "600px" }}
+          />
+          <button id="new-task-submit" onClick={handleSubmit}>
+            Update todo
+          </button>
+        </div>
+      ) : (
+        <div>
+          <input
+            id="new-task-input"
+            type="text"
+            value={input}
+            ref={inputRef}
+            onChange={(e) => setInput(e.target.value)}
+            name="text"
+            className="todo-input edit"
+            style={{ width: "600px" }}
+            placeholder="What do you have planned?"
+          />
+          <button id="new-task-submit">Add todo</button>
+        </div>
+      )}
     </form>
   );
 }
